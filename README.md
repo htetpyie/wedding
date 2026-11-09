@@ -19,12 +19,12 @@ Astro, TypeScript (strict), and Tailwind CSS with the official Vite plugin.
 - `src/lib/` — shared application helpers
 - `public/` — static assets
 
-## Next steps
+## Shared guestbook
 
-The starter intentionally leaves the final visual design open. Guestbook submission,
-moderation, storage, and spam protection will be implemented after selecting a backend.
-Hosting remains portable: deploy `dist/` to any static host and test access on Yangon
-networks before choosing a provider. No Cloudflare services or credentials are required.
+Cloudflare Pages Functions + D1 store wishes pending owner approval. Guests can
+submit and read approved wishes, but cannot edit, delete, or approve records.
+Follow [the D1 setup guide](docs/cloudflare-d1.md) to initialize and bind the database.
+The live backend becomes available only after the binding and migration are applied.
 
 ## Customize the invitation
 
@@ -37,5 +37,5 @@ Audio starts only after a guest clicks a control. The opened-invitation preferen
 remembered locally; `#details` links bypass the cover as well. Gallery supports modal,
 keyboard, and swipe navigation. Animations respect reduced-motion preferences.
 
-The guestbook is a device-local preview, not a shared or moderated online guestbook.
-No real wedding date or times are set, so calendar export is deferred until those are known.
+Run `node --test tests/wishes.test.js` for backend permission/validation checks.
+Astro dev alone does not run the Cloudflare Functions backend.

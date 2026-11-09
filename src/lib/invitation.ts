@@ -92,24 +92,45 @@ let touchStart = 0;
 viewer.addEventListener('touchstart', e => { touchStart = e.changedTouches[0].screenX; }, { passive: true });
 viewer.addEventListener('touchend', e => { const delta = e.changedTouches[0].screenX - touchStart; if (Math.abs(delta) > 55) showPhoto(current + (delta < 0 ? 1 : -1)); }, { passive: true });
 type Wish = { name: string; message: string };
-let wishes: Wish[] = [];
-try { const saved: unknown = JSON.parse(storage.get('wedding-wishes') || '[]'); if (Array.isArray(saved)) wishes = saved.filter((w): w is Wish => typeof w?.name === 'string' && typeof w?.message === 'string').slice(0, 50); } catch { /* Ignore invalid local data. */ }
-function renderWishes() {
-  $('wish-wall').replaceChildren(...wishes.map(wish => {
-    const article = document.createElement('article'); article.className = 'wish-note';
-    const message = document.createElement('p'); message.textContent = wish.message;
-    const name = document.createElement('small'); name.textContent = `With love, ${wish.name}`;
-    article.append(message, name); return article;
-  }));
+async function loadWishes() {
+  const wall = $('wish-wall');
+  try {
+    const response = await fetch('/api/wishes', { cache: 'no-store' });
+    if (!response.ok) throw new Error();
+    const data = await response.json();
+    if (!Array.isArray(data.wishes)) throw new Error();
+    const wishes: Wish[] = data.wishes.filter((w: Wish) => typeof w.name === 'string' && typeof w.message === 'string');
+    wall.replaceChildren(...wishes.map(wish => {
+      const article = document.createElement('article'); article.className = 'wish-note';
+      const message = document.createElement('p'); message.textContent = wish.message;
+      const name = document.createElement('small'); name.textContent = `With love, ${wish.name}`;
+      article.append(message, name); return article;
+    }));
+    $('wish-wall-status').textContent = wishes.length ? '' : 'Be the first to leave a little love. Approved wishes will appear here.';
+  } catch { $('wish-wall-status').textContent = 'Wishes could not load right now. Please try refreshing later.'; }
 }
-renderWishes();
-$<HTMLFormElement>('wish-form').addEventListener('submit', e => {
-  e.preventDefault(); const name = $<HTMLInputElement>('guest-name').value.trim(); const message = $<HTMLTextAreaElement>('guest-message').value.trim();
+void loadWishes();
+const wishForm = $<HTMLFormElement>('wish-form');
+const submitWish = wishForm.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+let submittingWish = false;
+wishForm.addEventListener('submit', async e => {
+  e.preventDefault(); if (submittingWish) return;
+  const name = $<HTMLInputElement>('guest-name').value.trim();
+  const message = $<HTMLTextAreaElement>('guest-message').value.trim();
   if (!name || message.length < 3) { $('wish-status').textContent = 'Please add your name and a wish of at least 3 characters.'; return; }
-  wishes = [{ name, message }, ...wishes].slice(0, 50);
-  const saved = storage.set('wedding-wishes', JSON.stringify(wishes)); renderWishes();
-  $('wish-status').textContent = saved ? 'Thank you for the love! Your preview wish is saved on this device. ♡' : 'Thank you! Your wish is shown below, but this browser could not save it.';
-  $<HTMLFormElement>('wish-form').reset();
+  submittingWish = true; submitWish.disabled = true; wishForm.setAttribute('aria-busy', 'true');
+  $('wish-status').textContent = 'Sending your wish…';
+  try {
+    const response = await fetch('/api/wishes', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message, website: $<HTMLInputElement>('guest-website').value }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Unable to save your wish. Please try again.');
+    $('wish-status').textContent = result.message; wishForm.reset();
+  } catch (error) {
+    $('wish-status').textContent = error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Unable to send your wish. Your text is still here; please try again.';
+  } finally { submittingWish = false; submitWish.disabled = false; wishForm.removeAttribute('aria-busy'); }
 });
 
 // ISO timestamps include Yangon’s offset so every guest sees the same countdown.

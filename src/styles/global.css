@@ -88,3 +88,4 @@
 @media(prefers-reduced-motion:reduce){.invitation-paper{animation:none}}
 /* Keep the portrait invitation still, including entrance and opening states. */
 .stationery,.invitation-paper,.opening .invitation-paper,.card-topline>span:nth-child(2){animation:none;transform:none}
+.wish-honeypot{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.wish-wall-status{grid-column:1/-1;font-size:13px}.wish-form button:disabled{opacity:.65;cursor:wait;transform:none}
