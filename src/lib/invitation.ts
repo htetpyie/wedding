@@ -108,7 +108,7 @@ async function loadWishes() {
       const name = document.createElement('small'); name.textContent = `With love, ${wish.name}`;
       article.append(message, name); return article;
     }));
-    $('wish-wall-status').textContent = wishes.length ? '' : 'Be the first to leave a little love. Approved wishes will appear here.';
+    $('wish-wall-status').textContent = wishes.length ? '' : 'Be the first to leave a little love.';
   } catch (error) {
     $('wish-wall-status').textContent = error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Wishes could not load. Please check your connection and refresh.';
   }
@@ -136,6 +136,7 @@ wishForm.addEventListener('submit', async e => {
     if (!response.ok) throw new Error(result.error || 'Unable to save your wish. Please try again.');
     if (response.status !== 201 || typeof result.message !== 'string') throw new Error('The guestbook returned an unexpected response. Please try again later.');
     $('wish-status').textContent = result.message; wishForm.reset();
+    await loadWishes();
   } catch (error) {
     $('wish-status').textContent = error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Unable to send your wish. Your text is still here; please try again.';
   } finally { submittingWish = false; submitWish.disabled = false; wishForm.removeAttribute('aria-busy'); }

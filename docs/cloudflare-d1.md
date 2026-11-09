@@ -36,9 +36,9 @@ Pages Functions. Existing static Workers deployments cannot use this command dir
 ## 4. Verify
 
 - Visit `https://YOUR_SITE/api/wishes`: initially expect `{"wishes":[]}`.
-- Submit a test wish. Expect a saved/pending-approval message.
+- Submit a test wish. Expect a saved/published message.
 - In D1 Console: `SELECT id, name, message, approved, created_at FROM wishes ORDER BY created_at DESC;`
-- Copy the test wish's ID and approve using the statement below.
+- New wishes publish immediately. For older pending wishes, run `migrations/0002_publish_existing_wishes.sql` once if you want to publish them all.
 - Refresh the website, preferably on another device. The wish should appear.
 - If the endpoint is HTML/404, Functions did not deploy. If it returns 503, check
   the DB binding, migration, and deployment logs. A redeploy is required after binding.
@@ -71,7 +71,7 @@ DELETE FROM wishes WHERE id = 'PASTE_WISH_ID';
 ```
 
 There is no public update/delete endpoint or public admin key. Visitors cannot
-choose approved status. All submissions start pending. Public GET returns at most
+choose approved status. New submissions are immediately published (approved = 1). Hidden wishes remain excluded. Public GET returns at most
 100 latest approved wishes. Name and message are displayed as text, not HTML.
 
 The form includes a honeypot, server-side length/body validation, and cross-origin

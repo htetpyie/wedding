@@ -21,8 +21,8 @@ Astro, TypeScript (strict), and Tailwind CSS with the official Vite plugin.
 
 ## Shared guestbook
 
-Cloudflare Pages Functions + D1 store wishes pending owner approval. Guests can
-submit and read approved wishes, but cannot edit, delete, or approve records.
+Cloudflare Pages Functions + D1 publish new wishes immediately. Guests can
+submit and read visible wishes, but cannot edit, delete, or approve records.
 Follow [the D1 setup guide](docs/cloudflare-d1.md) to initialize and bind the database.
 The live backend becomes available only after the binding and migration are applied.
 
