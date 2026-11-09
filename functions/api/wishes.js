@@ -38,7 +38,8 @@ export async function onRequest({ request, env }) {
     // Only explicit fields are inserted. Clients cannot choose approval or IDs.
     await env.DB.prepare('INSERT INTO wishes (id, name, message) VALUES (?, ?, ?)').bind(crypto.randomUUID(), name, message).run();
     return json({ message: 'Thank you for the love! Your wish is saved and will appear after approval. ♡' }, 201);
-  } catch {
+  } catch (error) {
+    console.error('Guestbook D1 operation failed:', error);
     return json({ error: 'The guestbook is temporarily unavailable. Please try again.' }, 503);
   }
 }

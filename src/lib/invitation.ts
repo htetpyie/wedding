@@ -96,9 +96,11 @@ async function loadWishes() {
   const wall = $('wish-wall');
   try {
     const response = await fetch('/api/wishes', { cache: 'no-store' });
-    if (!response.ok) throw new Error();
+    const isJson = response.headers.get('content-type')?.includes('application/json');
+    if (!isJson) throw new Error('The guestbook API is not available on this deployment.');
     const data = await response.json();
-    if (!Array.isArray(data.wishes)) throw new Error();
+    if (!response.ok) throw new Error(data.error || 'The guestbook is temporarily unavailable.');
+    if (!Array.isArray(data.wishes)) throw new Error('The guestbook returned an unexpected response.');
     const wishes: Wish[] = data.wishes.filter((w: Wish) => typeof w.name === 'string' && typeof w.message === 'string');
     wall.replaceChildren(...wishes.map(wish => {
       const article = document.createElement('article'); article.className = 'wish-note';
@@ -107,7 +109,9 @@ async function loadWishes() {
       article.append(message, name); return article;
     }));
     $('wish-wall-status').textContent = wishes.length ? '' : 'Be the first to leave a little love. Approved wishes will appear here.';
-  } catch { $('wish-wall-status').textContent = 'Wishes could not load right now. Please try refreshing later.'; }
+  } catch (error) {
+    $('wish-wall-status').textContent = error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Wishes could not load. Please check your connection and refresh.';
+  }
 }
 void loadWishes();
 const wishForm = $<HTMLFormElement>('wish-form');
