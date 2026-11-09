@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { wedding, photos } from '../data/wedding';
+---
+<BaseLayout title="Aung Kyaw Oo & Htet Inzali Wai — Our wedding" description="An invitation to our next chapter. Wedding details, our story, photographs, and your wishes.">
+  <a class="skip-link" href="#details">Skip to wedding details</a>
+  <header class="site-header">
+    <a class="monogram" href="#invitation" aria-label="Back to invitation">{wedding.initials}<span>THE WEDDING</span></a>
+    <nav aria-label="Main navigation"><a href="#details">The day</a><a href="#story">Our story</a><a href="#gallery">Gallery</a><a href="#wishes">Wishes</a></nav>
+    <button id="music-toggle" class="music-control" aria-pressed="false">♫ <span>Music off</span></button>
+  </header>
+  <main>
+    <section id="invitation" class="hero">
+      <div class="invitation-intro"><span class="eyebrow">A SPECIAL DELIVERY, JUST FOR YOU</span><p>A little invitation. A beautiful beginning.</p></div>
+      <div class="stationery">
+        <div class="envelope-back" aria-hidden="true"></div>
+        <div class="invitation-paper">
+          <div class="card-topline"><span>THE WEDDING OF</span><span aria-hidden="true">✧</span><span>WITH LOVE, ALWAYS</span></div>
+          <div class="card-portrait"><img src={photos[0].src} alt="Placeholder for your pre-wedding portrait" width="1000" height="1200" fetchpriority="high"/></div>
+          <div class="hero-copy"><p class="script">Together, with you.</p><h1><span class="couple-name">{wedding.names[0]}</span><span aria-hidden="true">&</span><span class="couple-name">{wedding.names[1]}</span></h1><div class="card-date"><time datetime={wedding.startsAt}>{wedding.dateLabel}</time><span class="cover-time">{wedding.timeLabel} · Yangon</span></div><button class="button primary" id="open-invitation"><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>Open invitation</span><span aria-hidden="true">↗</span></button><span class="open-hint">The day, our story & a little love inside</span></div>
+          <div class="card-bottomline"><span aria-hidden="true">——</span><span>{wedding.initials}</span><span aria-hidden="true">——</span></div>
+        </div>
+      </div>
+      <a class="return-link" href="#details">Already opened it? Jump to wedding details ↓</a>
+    </section>
+    <section id="details" class="section details">
+      <div class="reveal"><p class="eyebrow">THE DAY WE SAY “I DO”</p><h2>A day for love.<br/><em>A lifetime of us.</em></h2><p>Our favourite people, all in one place.<br/>We would love for you to be there.</p>
+        <div class="countdown" data-start={wedding.startsAt} data-end={wedding.endsAt} role="timer" aria-label="Countdown to the wedding ceremony">
+          <p class="eyebrow" id="countdown-title">COUNTING DOWN TO OUR FOREVER</p>
+          <div class="countdown-units">{['Days','Hours','Minutes','Seconds'].map((unit)=><div><strong data-count={unit.toLowerCase()}>—</strong><span>{unit}</span></div>)}</div>
+          <p class="countdown-note">15 November · 9:00 AM · Yangon time (UTC+6:30)</p>
+          <noscript>The ceremony begins on 15 November 2026 at 9:00 AM, Yangon time.</noscript>
+        </div>
+      </div>
+      <div class="invitation-card event-card reveal"><p class="eyebrow">YOUR INVITATION TO CELEBRATE</p>
+        <div class="event-date"><span>SUNDAY</span><strong>15</strong><span>NOVEMBER 2026</span></div>
+        <div class="event-time"><span class="eyebrow">CEREMONY</span><time datetime={wedding.startsAt}>{wedding.timeLabel}</time><span>Yangon time · UTC+6:30</span></div>
+        <div class="event-location"><span class="eyebrow">MEET US AT</span><h3>{wedding.venue}</h3><p lang="my">{wedding.address}</p></div>
+        <a class="button primary" href={wedding.mapUrl} target="_blank" rel="noopener noreferrer"><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Get directions</span><span aria-hidden="true">↗</span></a>
+        <p class="sample-note">We look forward to celebrating with you.</p>
+      </div>
+    </section>
+    <section id="story" class="section story"><div class="section-heading reveal"><p class="eyebrow">THE LITTLE MOMENTS THAT LED US HERE</p><h2>Every love has a story.<br/><em>This one is ours.</em></h2></div><div class="story-grid"><div class="story-photo reveal"><img src={photos[1].src} alt="Placeholder for a photograph from your story" width="1000" height="1200" loading="lazy"/><span class="script">And then, there was you.</span></div><div class="timeline">{[{n:'01',title:'The first hello',text:'Tell the story of how you met — the place, the moment, and the little detail you still remember.'},{n:'02',title:'Our favourite adventure',text:'Share a journey, a simple everyday memory, or the moment you knew you had found your person.'},{n:'03',title:'A very easy yes',text:'A few words about the proposal, and the beginning of this beautiful next chapter.'}].map(item=><article class="reveal"><span>{item.n}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></article>)}</div></div></section>
+    <section id="gallery" class="section gallery"><div class="section-heading reveal"><p class="eyebrow">FIVE MOMENTS. A THOUSAND FEELINGS.</p><h2>A little glimpse <em>of us.</em></h2><p>Our favourite memories, held a little longer.</p></div><div class="photo-grid">{photos.map((photo,i)=><button class:list={['gallery-photo','reveal',{'featured':i===0}]} data-photo={i} aria-label={`Enlarge ${photo.label}`}><img src={photo.src} alt={`Photo placeholder: ${photo.label}`} width="1000" height="1200" loading="lazy"/><span>{photo.label}<b aria-hidden="true">↗</b></span></button>)}</div></section>
+    <section id="wishes" class="section wishes"><div class="reveal"><p class="eyebrow">WORDS WE’LL KEEP FOREVER</p><h2>Your wishes,<br/><em>our keepsakes.</em></h2><p>Leave us a little love, a happy memory,<br/>or a wish for our journey together.</p><p class="script">A little note means a lot.</p></div><form id="wish-form" class="wish-form reveal"><label for="guest-name">Your name</label><input id="guest-name" name="name" maxlength="80" required autocomplete="name" placeholder="With love, from…"/><label for="guest-message">Your wish for us</label><textarea id="guest-message" name="message" rows="4" minlength="3" maxlength="1000" required placeholder="Wishing you a lifetime of…"></textarea><button class="button primary" type="submit">Send a little love <span>♡</span></button><p id="wish-status" role="status"></p></form><div id="wish-wall" class="wish-wall" aria-label="Wishes saved on this device"></div></section>
+    <footer class="closing"><span class="eyebrow">THE BEST IS YET TO COME</span><h2>With full hearts,<br/><em>thank you.</em></h2><p>We can’t wait to celebrate this beautiful beginning with you.</p><a href="#invitation" id="replay">Replay invitation ↑</a><div class="footer-monogram">{wedding.initials}</div><span class="eyebrow">MADE FOR OUR FOREVER</span></footer>
+  </main>
+  <dialog id="photo-viewer" aria-label="Photo gallery"><button id="close-viewer" class="viewer-close" aria-label="Close gallery">✕</button><img id="viewer-image" alt=""/><div class="viewer-controls"><button id="previous-photo" aria-label="Previous photo">←</button><span id="photo-count" aria-live="polite"></span><button id="next-photo" aria-label="Next photo">→</button></div></dialog>
+  <audio id="wedding-audio" src={wedding.musicUrl || undefined} loop preload="none"></audio>
+  <script>
+    import '../lib/invitation';
+  </script>
+</BaseLayout>
