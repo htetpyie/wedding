@@ -129,8 +129,12 @@ wishForm.addEventListener('submit', async e => {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, message, website: $<HTMLInputElement>('guest-website').value }),
     });
+    if (!response.headers.get('content-type')?.includes('application/json')) {
+      throw new Error('The guestbook is not available on this deployment. Your wish has not been saved; please try again later.');
+    }
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Unable to save your wish. Please try again.');
+    if (response.status !== 201 || typeof result.message !== 'string') throw new Error('The guestbook returned an unexpected response. Please try again later.');
     $('wish-status').textContent = result.message; wishForm.reset();
   } catch (error) {
     $('wish-status').textContent = error instanceof Error && error.message !== 'Failed to fetch' ? error.message : 'Unable to send your wish. Your text is still here; please try again.';
