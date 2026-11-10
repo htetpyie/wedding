@@ -16,7 +16,7 @@ import { wedding, photos } from '../data/wedding';
         <div class="envelope-back" aria-hidden="true"></div>
         <div class="invitation-paper">
           <div class="card-topline"><span>THE WEDDING OF</span><span aria-hidden="true">✧</span><span>WITH LOVE, ALWAYS</span></div>
-          <div class="card-portrait"><img src={photos[0].src} alt="Placeholder for your pre-wedding portrait" width="1000" height="1200" fetchpriority="high"/></div>
+          <div class="card-portrait"><img src={photos[2].src} alt="Placeholder for your pre-wedding portrait" width="1000" height="1200" fetchpriority="high"/></div>
           <div class="hero-copy"><p class="script">Together, with you.</p><h1><span class="couple-name">{wedding.names[0]}</span><span aria-hidden="true">&</span><span class="couple-name">{wedding.names[1]}</span></h1><div class="card-date"><time datetime={wedding.startsAt}>{wedding.dateLabel}</time><span class="cover-time">{wedding.timeLabel} · Yangon</span></div><button class="button primary" id="open-invitation"><svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg><span>Open invitation</span><span aria-hidden="true">↗</span></button><span class="open-hint">The day, our story & a little love inside</span></div>
           <div class="card-bottomline"><span aria-hidden="true">——</span><span>{wedding.initials}</span><span aria-hidden="true">——</span></div>
         </div>

@@ -18,4 +18,4 @@ export const photos = [
   { label: 'Somewhere with you', color: '#7e8a78' },
   { label: 'The little joys', color: '#beaa98' },
   { label: 'Just us', color: '#929481' },
-].map((photo, index) => ({ ...photo, src: `/photos/photo-${index + 1}.svg` }));
+].map((photo, index) => ({ ...photo, src: `/photos/photo-${index + 1}.JPG` }));
